@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace：必须与对应的接口全类名一致
+    id:必须与对应接口的某个对应的方法名一致
+
+ -->
+<mapper namespace="com.hey.dao.VideoDao">
+
+    <!--注册之前判断用户是不是已经存在-->
+    <select id="userIsExist" resultType="java.util.Map">
+        select id from normal_user where openid=#{arg0} limit 1
+    </select>
+
+    <!--用户同意授权后拿到信息注册到数据库中,返回用户id-->
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id">
+        insert into normal_user(register_time,balance,openid,head,nick_name,sex,city,update_time,session_key,fact_pay) values
+        (now(),0.00,#{openid},#{head},#{nickName},#{sex},#{city},now(),#{sessionKey},0.00);
+    </insert>
+
+    <!--返回用户信息-->
+    <select id="getUserInfo" resultType="java.util.Map">
+        select * from normal_user where id=#{arg0}
+    </select>
+
+    <!--判断用户是否有权限-->
+    <select id="userIsAuthed" resultType="java.lang.Integer">
+        select count(1) from normal_user where id=#{arg0} and openid=#{arg1}
+    </select>
+
+    <!--获取词条-->
+    <select id="getWords" resultType="java.util.Map">
+        select * from words
+    </select>
+
+</mapper>
+
+
+
