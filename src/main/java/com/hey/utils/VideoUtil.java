@@ -1,5 +1,9 @@
 package com.hey.utils;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Created by hey on 2018/3/23.
  */
@@ -11,9 +15,8 @@ public class VideoUtil {
     protected static final String CALL_BACK_URL="";
     protected static final String APP_ID="1256242181";
 
-    public static String getStreamAddress(){
+    public static String getStreamAddress(String code){
         String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID;
-        String code = getRandomCode();
         Long time = getTxTime();
         address += code+"?bizid="+BIZ_ID+"&"+Test.getSafeUrl(SAFE_KEY,code,time);
         return address;
@@ -83,5 +86,70 @@ public class VideoUtil {
         String sign = getSign();
         //开始发送请求
 
+    }
+
+    /**
+     * 从网络Url中下载文件
+     * @param urlStr
+     * @param fileName
+     * @param savePath
+     * @throws IOException
+     */
+    public static void  downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException {
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+        //设置超时间为3秒
+        conn.setConnectTimeout(3*1000);
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+        //得到输入流
+        InputStream inputStream = conn.getInputStream();
+        ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+        byte[] data;
+        try {
+            data = readInputStream(inputStream);
+            //文件保存位置
+            File saveDir = new File(savePath);
+            if(!saveDir.exists()){
+                saveDir.mkdir();
+            }
+            File file = new File(saveDir+File.separator+fileName);
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(data);
+            if(fos!=null){
+                fos.close();
+            }
+            if(inputStream!=null){
+                inputStream.close();
+            }
+            System.out.println("info:"+url+" download success");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static byte[] readInputStream(InputStream inStream) throws Exception{
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        //创建一个Buffer字符串
+        byte[] buffer = new byte[1024];
+        //每次读取的字符串长度，如果为-1，代表全部读取完毕
+        int len = 0;
+        //使用一个输入流从buffer里把数据读取出来
+        while( (len=inStream.read(buffer)) != -1 ){
+            //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+            outStream.write(buffer, 0, len);
+        }
+        //关闭输入流
+        inStream.close();
+        //把outStream里的数据写入内存
+        return outStream.toByteArray();
+    }
+
+    public static void main(String[] args)throws Exception {
+        String url = "http://1256242181.vod2.myqcloud.com/1049971fvodgzp1256242181/f8137d667447398155384996696/f0.mp4";
+        String file = "f0.mp4";
+        String path = "C:\\Users\\hey\\Desktop\\MP3";
+        downLoadFromUrl(url,file,path);
     }
 }

@@ -2,6 +2,8 @@ package com.hey.service.impl;
 
 import com.hey.dao.VideoDao;
 import com.hey.service.VideoService;
+import com.hey.utils.RandomNumberGenerator;
+import com.hey.utils.VideoUtil;
 import com.hey.utils.WxUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,6 @@ public class VideoServiceImpl implements VideoService {
 
         map.put("openid",openid);
         map.put("session_key",session_key);
-        map.put("id",0);
         //添加用户之前判断用户是不是已经添加
         Map flag = videoDao.userIsExist(openid);
         Long uid;
@@ -40,6 +41,12 @@ public class VideoServiceImpl implements VideoService {
             retMap.put("uid",uid);
             retMap.put("openid",openid);
         }else {
+            String code = VideoUtil.getRandomCode();
+            map.put("id", RandomNumberGenerator.generateNumber2());
+            map.put("stream_address", VideoUtil.getStreamAddress(code));
+            map.put("flv_address", VideoUtil.getPlayAddressFLV(code));
+            map.put("hls_address", VideoUtil.getPlayAddressHLS(code));
+            map.put("rtmp_address", VideoUtil.getPlayAddressRTMP(code));
             videoDao.addUser(map);
             uid = Long.valueOf(map.get("id").toString());
             retMap.put("uid",uid);

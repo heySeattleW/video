@@ -15,8 +15,8 @@
 
     <!--用户同意授权后拿到信息注册到数据库中,返回用户id-->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="id">
-        insert into normal_user(register_time,balance,openid,head,nick_name,sex,city,update_time,session_key,fact_pay) values
-        (now(),0.00,#{openid},#{head},#{nickName},#{sex},#{city},now(),#{sessionKey},0.00);
+        insert into normal_user(id,register_time,openid,head,nick_name,sex,city,update_time,session_key,stream_address,flv_address,hls_address,rtmp_address) values
+        (#{id},now(),#{openid},#{head},#{nickName},#{sex},#{city},now(),#{sessionKey},#{stream_address},#{flv_address},#{hls_address},#{rtmp_address});
     </insert>
 
     <!--返回用户信息-->
