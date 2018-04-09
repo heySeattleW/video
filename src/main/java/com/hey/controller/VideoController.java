@@ -87,16 +87,8 @@ public class VideoController {
 
 //    @PostMapping(value = "/record/start")
 //    @ApiOperation(value = "点击开始录播",httpMethod = "POST")
-//    public Object startRecord(@ApiParam(name="code",value = "code",required = true)
-//                          @RequestParam(value = "code",required = true)String code,
-//                          @ApiParam(name="sex",value = "性别，1是男，2是女，0是未知",required = true)
-//                          @RequestParam(value = "sex",required = true)Integer sex,
-//                          @ApiParam(name="city",value = "城市",required = true)
-//                          @RequestParam(value = "city",required = true)String city,
-//                          @ApiParam(name="nickName",value = "昵称",required = true)
-//                          @RequestParam(value = "nickName",required = true)String nickName,
-//                          @ApiParam(name="head",value = "头像",required = true)
-//                          @RequestParam(value = "head",required = true)String head
+//    public Object startRecord(@ApiParam(name="uid",value = "uid",required = true)
+//                            @RequestParam(value = "uid",required = true)Long uid
 //    ){
 //        Map map = new HashMap();
 //        Map parMap = new HashMap();
@@ -158,6 +150,8 @@ public class VideoController {
         System.out.println(result);
         Map retMap = String2Map.getValueGson(result);
         int eventType = (Integer)retMap.get("event_type");
+        //从streamid中获取用户id
+        String streamId = retMap.get("stream_id").toString();
         if(eventType==100){
             Map map = new HashMap();
             //回调类型为录制完成回调
@@ -188,9 +182,11 @@ public class VideoController {
                 }
             }
             map.put("words",words);
+            map.put("audioTime",time);
+            map.put("uid",streamId);
             //将视频和音频的地址存进数据库
-            map.put("",audioPath);
-            map.put("",videoPath);
+            map.put("audio",audioPath);
+            map.put("video",videoPath);
             videoService.addVideoAndAudio(map);
         }
         return "{ \"code\":0 }";
