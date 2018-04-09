@@ -42,6 +42,13 @@ public interface VideoDao {
     Map getUserInfo(Long uid)throws Exception;
 
     /**
+     * 更新用户信息
+     * @param map
+     * @throws Exception
+     */
+    void updateUserInfo(Map map)throws Exception;
+
+    /**
      * 获取词条
      * @return
      * @throws Exception

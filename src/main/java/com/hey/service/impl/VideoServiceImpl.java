@@ -27,8 +27,6 @@ public class VideoServiceImpl implements VideoService {
         Map tokenMap = WxUtil.getWxAccessToken(map.get("code").toString());
         String openid = tokenMap.get("openid").toString();
         String session_key = tokenMap.get("session_key").toString();
-        //Map infoMap = WxUtil.getUserInfo(accessToken,openid);
-        //Map infoMap = WxUtil.getUserInfo(accessToken,openid);
 
         map.put("openid",openid);
         map.put("session_key",session_key);
@@ -41,8 +39,8 @@ public class VideoServiceImpl implements VideoService {
             retMap.put("uid",uid);
             retMap.put("openid",openid);
         }else {
-            String code = VideoUtil.getRandomCode();
-            map.put("id", RandomNumberGenerator.generateNumber2());
+            String code = RandomNumberGenerator.generateNumber2();
+            map.put("id", code);
             map.put("stream_address", VideoUtil.getStreamAddress(code));
             map.put("flv_address", VideoUtil.getPlayAddressFLV(code));
             map.put("hls_address", VideoUtil.getPlayAddressHLS(code));

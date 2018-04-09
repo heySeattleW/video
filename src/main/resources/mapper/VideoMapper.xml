@@ -19,6 +19,27 @@
         (#{id},now(),#{openid},#{head},#{nickName},#{sex},#{city},now(),#{sessionKey},#{stream_address},#{flv_address},#{hls_address},#{rtmp_address});
     </insert>
 
+    <!--更新用户信息-->
+    <update id="updateUserInfo">
+        update noemal_user
+        <set>
+            <if test="stream_address!=null and stream_address!=''">
+                stream_address=#{stream_address},
+            </if>
+            <if test="flv_address!=null and flv_address!=''">
+                flv_address=#{flv_address},
+            </if>
+            <if test="hls_address!=null and hls_address!=''">
+                hls_address=#{hls_address},
+            </if>
+            <if test="rtmp_address!=null and stream_address!=''">
+                rtmp_address=#{rtmp_address},
+            </if>
+            update_time=now()
+        </set>
+        where id=#{uid}
+    </update>
+
     <!--返回用户信息-->
     <select id="getUserInfo" resultType="java.util.Map">
         select * from normal_user where id=#{arg0}

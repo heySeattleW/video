@@ -183,7 +183,7 @@ public class VideoController {
             }
             map.put("words",words);
             map.put("audioTime",time);
-            map.put("uid",streamId);
+            map.put("uid",streamId.split("_")[0]);
             //将视频和音频的地址存进数据库
             map.put("audio",audioPath);
             map.put("video",videoPath);
