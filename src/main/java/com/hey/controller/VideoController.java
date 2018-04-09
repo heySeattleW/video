@@ -189,7 +189,10 @@ public class VideoController {
             map.put("video",videoPath);
             videoService.addVideoAndAudio(map);
         }
-        return "{ \"code\":0 }";
+        return "{\n" +
+                "    \"code\": 0,\n" +
+                "    \"message\": \"\"\n" +
+                "}";
     }
 
 }
