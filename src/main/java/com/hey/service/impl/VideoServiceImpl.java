@@ -79,4 +79,13 @@ public class VideoServiceImpl implements VideoService {
     public List<Map> getWords()throws Exception{
         return videoDao.getWords();
     }
+
+    /**
+     * 新增视频和音频
+     * @param map
+     * @throws Exception
+     */
+    public void addVideoAndAudio(Map map)throws Exception{
+        videoDao.addVideoAndAudio(map);
+    }
 }

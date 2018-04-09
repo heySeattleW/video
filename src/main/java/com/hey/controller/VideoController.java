@@ -3,10 +3,11 @@ package com.hey.controller;
 import com.baidu.aip.speech.AipSpeech;
 import com.baidu.aip.speech.TtsResponse;
 import com.hey.service.VideoService;
-import com.hey.utils.String2Map;
-import com.hey.utils.UploadSomething;
+import com.hey.utils.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.Header;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -154,24 +155,45 @@ public class VideoController {
             outSteam.close();
             inStream.close();
             String result = new String(outSteam.toByteArray(), "utf-8");
-            //String status = map.get("result_code").toString();
-            LOGGER.info(result);
+        System.out.println(result);
         Map retMap = String2Map.getValueGson(result);
         int eventType = (Integer)retMap.get("event_type");
         if(eventType==100){
-            //回调时间为录制完成回调
+            Map map = new HashMap();
+            //回调类型为录制完成回调
             //拿到视频地址
             String videoUrl = retMap.get("video_url").toString();
+            String savePath = request.getServletContext().getRealPath("/public/video");
+            String fileName = "";
+            String targetPath = savePath+fileName;
+            //将视频下载到自己服务器
+            VideoUtil.downLoadFromUrl(videoUrl,fileName+".mp4",savePath);
+            //从视频中提取音频
+            String videoPath = targetPath+".mp4";
+            String audioPath = targetPath+".mp3";
+            AudioConverter.getAudioFromVideo(videoPath,audioPath);
+            //将音频进行语音识别
+            //首先拿到音频的时间看需不需要切割
+            int time = AudioConverter.getAudioTime(audioPath);
+            String words = "";
+            if (time>60){
+                //音频时长大于60，切割,获取识别后的文字
+                words = AudioConverter.splitAudio(audioPath,targetPath);
+            }else {
+                //时长小于60s，直接识别
+                //先将mp3转成wav
+                boolean flag = AudioConverter.AudioConverter(audioPath,targetPath+".wav", "wav");
+                if(flag){
+                    words = VoiceDistinguish.getVoiceString(targetPath+".wav");
+                }
+            }
+            map.put("words",words);
+            //将视频和音频的地址存进数据库
+            map.put("",audioPath);
+            map.put("",videoPath);
+            videoService.addVideoAndAudio(map);
         }
         return "{ \"code\":0 }";
-    }
-
-    public static void main(String[] args)throws Exception {
-        String xx = "http://1256242181.vod2.myqcloud.com/1049971fvodgzp1256242181/f8137d667447398155384996696/f0.mp4";
-        FileInputStream inputStream = new FileInputStream(xx);
-        File file = new File(xx);
-        System.out.println(file.exists());
-
     }
 
 }

@@ -39,4 +39,11 @@ public interface VideoService {
      * @throws Exception
      */
     List<Map> getWords()throws Exception;
+
+    /**
+     * 新增视频和音频
+     * @param map
+     * @throws Exception
+     */
+    void addVideoAndAudio(Map map)throws Exception;
 }

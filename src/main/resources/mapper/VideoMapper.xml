@@ -34,6 +34,11 @@
         select * from words
     </select>
 
+    <!--插入音频和视频-->
+    <insert id="addVideoAndAudio">
+        insert into video() values ()
+    </insert>
+
 </mapper>
 
 

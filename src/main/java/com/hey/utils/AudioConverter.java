@@ -58,7 +58,7 @@ public class AudioConverter {
     }
 
     //从视频中分离出音频
-    public static void getAudioFromVideo(){
+    public static void getAudioFromVideo(String videoPath,String audioPath){
 
         AudioAttributes audio = new AudioAttributes();
         Encoder encoder = new Encoder();
@@ -67,8 +67,8 @@ public class AudioConverter {
         EncodingAttributes attrs = new EncodingAttributes();
         attrs.setFormat("mp3");
         attrs.setAudioAttributes(audio);
-        File source = new File("C:\\Users\\hey\\Downloads\\video.mp4");
-        File target = new File("C:\\Users\\hey\\Desktop\\a.mp3");
+        File source = new File(videoPath);
+        File target = new File(audioPath);
         try {
             encoder.encode(source,target,attrs);
         }catch (Exception e){
@@ -76,8 +76,18 @@ public class AudioConverter {
         }
     }
 
-    //分割音频成小段
-    public static void splitAudio(String sourcePath,String targetPath){
+    //获取音频时间
+    public static int getAudioTime(String audioPath)throws Exception{
+        FileInputStream fis = new FileInputStream(audioPath);
+        int b = fis.available();
+        Bitstream bt = new Bitstream(fis);
+        Header h = bt.readFrame();
+        int time = (int) h.total_ms(b)/1000;
+        return time;
+    }
+
+    //分割音频成小段,然后进行语音识别，返回识别出的文字
+    public static String splitAudio(String sourcePath,String targetPath){
         long beginTime = System.currentTimeMillis();
         AudioAttributes audio = new AudioAttributes();
         Encoder encoder = new Encoder();
@@ -86,9 +96,9 @@ public class AudioConverter {
         EncodingAttributes attrs = new EncodingAttributes();
         attrs.setFormat("wav");
         attrs.setAudioAttributes(audio);
-        File source = new File("C:\\Users\\hey\\Documents\\WeChat Files\\jaychou114118\\Files\\10002989.mp3");
+        File source = new File(sourcePath);
         int time;
-
+        String result = "";
         try {
             FileInputStream fis = new FileInputStream(source);
             int b = fis.available();
@@ -98,9 +108,8 @@ public class AudioConverter {
             int size = time/60+1;
             float duration = 59F;
             float offset = 0F;
-            String result = "";
             for(int i=0;i<size;i++){
-                String path = "C:\\Users\\hey\\Desktop\\MP3\\a"+i+".wav";
+                String path = targetPath+"_"+i+".wav";
                 File target = new File(path);
                 attrs.setDuration(duration);
                 attrs.setOffset(offset);
@@ -119,5 +128,6 @@ public class AudioConverter {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return result;
     }
 }
