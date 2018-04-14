@@ -52,7 +52,7 @@
 
     <!--获取词条-->
     <select id="getWords" resultType="java.util.Map">
-        select * from words
+        select * from word
     </select>
 
     <!--更新音频和视频-->
@@ -60,6 +60,14 @@
         insert into video(uid,video,audio,update_time,audio_words,audio_time) values
         (#{uid},#{video},#{audio},now(),#{words},#{audioTime})
     </insert>
+
+    <!--获取音频和视频-->
+    <select id="getVideoAndAudio" resultType="java.util.Map">
+        select * from video
+        <if test="uid!=null">
+            where uid=#{arg0}
+        </if>
+    </select>
 
 </mapper>
 

@@ -85,6 +85,23 @@ public class VideoController {
         return map;
     }
 
+    @GetMapping(value = "/info/video")
+    @ApiOperation(value = "获取视频和音频信息",httpMethod = "GET")
+    public Object getVideoInfo(@ApiParam(name="uid",value = "用户id",required = false)
+                              @RequestParam(value = "uid",required = false)Long uid){
+        Map map = new HashMap();
+        try {
+            map.put("result",videoService.getVideoAndAudio(uid));
+            map.put("code",SUCCESS_CODE);
+            map.put("msg",SUCCESS_MESSAGE);
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("code",ERROR_CODE);
+            map.put("msg",ERROR_MESSAGE);
+        }
+        return map;
+    }
+
 //    @PostMapping(value = "/record/start")
 //    @ApiOperation(value = "点击开始录播",httpMethod = "POST")
 //    public Object startRecord(@ApiParam(name="uid",value = "uid",required = true)
@@ -137,18 +154,22 @@ public class VideoController {
     @PostMapping(value = "/callback")
     @ApiOperation(value = "回调接口",httpMethod = "POST")
     public Object tencentCallBack(HttpServletRequest request)throws Exception {
-        InputStream inStream = request.getInputStream();
-            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = inStream.read(buffer)) != -1) {
-                outSteam.write(buffer, 0, len);
-            }
-            outSteam.close();
-            inStream.close();
-            String result = new String(outSteam.toByteArray(), "utf-8");
-        System.out.println(result);
-        Map retMap = String2Map.getValueGson(result);
+//        InputStream inStream = request.getInputStream();
+//            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+//            byte[] buffer = new byte[1024];
+//            int len;
+//            while ((len = inStream.read(buffer)) != -1) {
+//                outSteam.write(buffer, 0, len);
+//            }
+//            outSteam.close();
+//            inStream.close();
+//            String result = new String(outSteam.toByteArray(), "utf-8");
+//        System.out.println(result);
+//        Map retMap = String2Map.getValueGson(result);
+        Map retMap = new HashMap();
+        retMap.put("event_type",100);
+        retMap.put("stream_id","10742359");
+        retMap.put("video_url","http://1256242181.vod2.myqcloud.com/1049971fvodgzp1256242181/f8137d667447398155384996696/f0.mp4");
         int eventType = (Integer)retMap.get("event_type");
         //从streamid中获取用户id
         String streamId = retMap.get("stream_id").toString();
@@ -157,11 +178,16 @@ public class VideoController {
             //回调类型为录制完成回调
             //拿到视频地址
             String videoUrl = retMap.get("video_url").toString();
-            String savePath = request.getServletContext().getRealPath("/public/video");
-            String fileName = "";
+            String savePath = request.getServletContext().getRealPath("./public/video/");
+            File file = new File(savePath);
+            if(!file.exists()){
+                file.mkdir();
+            }
+            String fileName = streamId;
             String targetPath = savePath+fileName;
             //将视频下载到自己服务器
             VideoUtil.downLoadFromUrl(videoUrl,fileName+".mp4",savePath);
+
             //从视频中提取音频
             String videoPath = targetPath+".mp4";
             String audioPath = targetPath+".mp3";

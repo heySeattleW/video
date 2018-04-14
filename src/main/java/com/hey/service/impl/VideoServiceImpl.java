@@ -24,7 +24,10 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Map addUser(Map map) throws Exception {
         Map retMap = new HashMap();
-        Map tokenMap = WxUtil.getWxAccessToken(map.get("code").toString());
+        //Map tokenMap = WxUtil.getWxAccessToken(map.get("code").toString());
+        Map tokenMap = new HashMap();
+        tokenMap.put("openid","openid");
+        tokenMap.put("session_key","session_key");
         String openid = tokenMap.get("openid").toString();
         String session_key = tokenMap.get("session_key").toString();
 
@@ -85,5 +88,9 @@ public class VideoServiceImpl implements VideoService {
      */
     public void addVideoAndAudio(Map map)throws Exception{
         videoDao.addVideoAndAudio(map);
+    }
+
+    public List<Map> getVideoAndAudio(Long uid)throws Exception{
+        return videoDao.getVideoAndAudio(uid);
     }
 }

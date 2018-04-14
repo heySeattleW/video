@@ -46,4 +46,12 @@ public interface VideoService {
      * @throws Exception
      */
     void addVideoAndAudio(Map map)throws Exception;
+
+    /**
+     * 获取音频和视频
+     * @param uid
+     * @return
+     * @throws Exception
+     */
+    List<Map> getVideoAndAudio(Long uid)throws Exception;
 }

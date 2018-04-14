@@ -1,5 +1,6 @@
 package com.hey.utils;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -112,9 +113,13 @@ public class VideoUtil {
             //文件保存位置
             File saveDir = new File(savePath);
             if(!saveDir.exists()){
-                saveDir.mkdir();
+                saveDir.mkdirs();
             }
             File file = new File(saveDir+File.separator+fileName);
+            System.out.print(file.createNewFile());
+            if (!file.exists()){
+                new File(saveDir+File.separator+fileName);
+            }
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
             if(fos!=null){
