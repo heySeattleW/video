@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class WxUtil {
 
-    private static final String APP_SECRET = "3db482bb7be32ce0fd08b4b75d6334e8";
+    private static final String APP_SECRET = "22cc5c2003f984a3dfef88401feaf9c9";
     private static final String GRANT_TYPE = "authorization_code";
     private static final String GRANT_TYPE_USER = "snsapi_userinfo";
     private static final String REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
@@ -20,7 +20,7 @@ public class WxUtil {
     private static final String USER_INFO_URL = "https://api.weixin.qq.com/cgi-bin/user/info";
     private static final String LANG = "zh_CN";
     private static final String CODE_URL = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=";
-    public static final String XIAO_APP_ID = "wx0e7cf8fd6042800f";//小程序appid
+    public static final String XIAO_APP_ID = "wxf894dccc2f233eb6";//小程序appid
 
     //获取ACCESS_TOKEN(code换取)
     public static Map getWxAccessToken(String code){

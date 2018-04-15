@@ -154,23 +154,23 @@ public class VideoController {
     @PostMapping(value = "/callback")
     @ApiOperation(value = "回调接口",httpMethod = "POST")
     public Object tencentCallBack(HttpServletRequest request)throws Exception {
-//        InputStream inStream = request.getInputStream();
-//            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
-//            byte[] buffer = new byte[1024];
-//            int len;
-//            while ((len = inStream.read(buffer)) != -1) {
-//                outSteam.write(buffer, 0, len);
-//            }
-//            outSteam.close();
-//            inStream.close();
-//            String result = new String(outSteam.toByteArray(), "utf-8");
-//        System.out.println(result);
-//        Map retMap = String2Map.getValueGson(result);
-        Map retMap = new HashMap();
-        retMap.put("event_type",100);
-        retMap.put("stream_id","10742359");
-        retMap.put("video_url","http://1256242181.vod2.myqcloud.com/1049971fvodgzp1256242181/f8137d667447398155384996696/f0.mp4");
-        int eventType = (Integer)retMap.get("event_type");
+        InputStream inStream = request.getInputStream();
+            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inStream.read(buffer)) != -1) {
+                outSteam.write(buffer, 0, len);
+            }
+            outSteam.close();
+            inStream.close();
+            String result = new String(outSteam.toByteArray(), "utf-8");
+        System.out.println(result);
+        Map retMap = String2Map.getValueGson(result);
+//        Map retMap = new HashMap();
+//        retMap.put("event_type",100);
+//        retMap.put("stream_id","10742359");
+//        retMap.put("video_url","http://1256242181.vod2.myqcloud.com/1049971fvodgzp1256242181/f8137d667447398155384996696/f0.mp4");
+        double eventType = (Double)retMap.get("event_type");
         //从streamid中获取用户id
         String streamId = retMap.get("stream_id").toString();
         if(eventType==100){

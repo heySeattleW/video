@@ -64,9 +64,9 @@ public interface VideoDao {
 
     /**
      * 获取音频和视频
-     * @param uid
+     * @param map
      * @return
      * @throws Exception
      */
-    List<Map> getVideoAndAudio(Long uid)throws Exception;
+    List<Map> getVideoAndAudio(Map map)throws Exception;
 }

@@ -65,7 +65,7 @@
     <select id="getVideoAndAudio" resultType="java.util.Map">
         select * from video
         <if test="uid!=null">
-            where uid=#{arg0}
+            where uid=#{uid}
         </if>
     </select>
 

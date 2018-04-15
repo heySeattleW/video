@@ -5,6 +5,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 /**
  * Created by hey on 2018/3/23.
  */
@@ -17,24 +18,24 @@ public class VideoUtil {
     protected static final String APP_ID="1256242181";
 
     public static String getStreamAddress(String code){
-        String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID;
+        String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+"_";
         Long time = getTxTime();
         address += code+"?bizid="+BIZ_ID+"&"+Test.getSafeUrl(SAFE_KEY,code,time);
         return address;
     }
 
     public static String getPlayAddressRTMP(String code){
-        String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+code;
+        String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+"_"+code;
         return address;
     }
 
     public static String getPlayAddressFLV(String code){
-        String address = "http://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+code+".flv";
+        String address = "http://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+"_"+code+".flv";
         return address;
     }
 
     public static String getPlayAddressHLS(String code){
-        String address = "http://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+code+".m3u8";
+        String address = "http://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+"_"+code+".m3u8";
         return address;
     }
 
@@ -45,20 +46,26 @@ public class VideoUtil {
 
     public static Long getTxTime(){
         Long time = System.currentTimeMillis();
+        time = time+86400;
         return time;
     }
 
     //推流
-    public static void allowStream(Long time,String stream,int status){
+    public static void allowStream(String stream,int status){
+
         String url = "http://fcgi.video.qcloud.com/common_access";
         String api = "Live_Channel_SetStatus";
-        String sign = getSign();
+        Long time = getTxTime()+86400;
+        String sign = getSign(time);
+        String param = "appid="+APP_ID+"&interface="+api+"&Param.s.channel_id="+stream+"&Param.n.status="+status+"&t="+time+"&sign="+sign;
         //下面调用开始
-
+        System.out.println(HttpRequestUtil.sendGet(url,param));
     }
 
-    public static String getSign(){
-        String sign = "";
+    public static String getSign(Long time){
+        String timeToString = String.valueOf(time);
+        String sign1 = API_KEY+timeToString;
+        String sign = Md5Util.MD5(sign1).toLowerCase();
         return sign;
     }
 
@@ -74,7 +81,7 @@ public class VideoUtil {
         int type = 1;
         String format = "mp4";
         String endTime = "";
-        String sign = getSign();
+        String sign = getSign(time);
         //开始发送请求
         return null;
     }
@@ -84,7 +91,7 @@ public class VideoUtil {
         String api = "Live_Tape_Stop";
         int type = 1;
         String endTime = "";
-        String sign = getSign();
+        String sign = getSign(time);
         //开始发送请求
 
     }

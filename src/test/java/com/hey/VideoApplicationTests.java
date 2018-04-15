@@ -1,6 +1,7 @@
 package com.hey;
 
 import com.hey.service.impl.VideoServiceImpl;
+import com.hey.utils.VideoUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,11 @@ public class VideoApplicationTests {
 		//Map id = video.addUser(map);
 		System.out.println(video.getUserInfo(10742359L));
 		System.out.println(video.getWords());
+	}
+
+	@Test
+	public void testStream()throws Exception{
+		//String stream = VideoUtil.getStreamAddress("18504769");
+		VideoUtil.allowStream("21749"+"_18504769",1);
 	}
 }
