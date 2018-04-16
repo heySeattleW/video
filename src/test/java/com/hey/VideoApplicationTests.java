@@ -1,6 +1,7 @@
 package com.hey;
 
 import com.hey.service.impl.VideoServiceImpl;
+import com.hey.utils.TecentCloudUtils;
 import com.hey.utils.VideoUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +38,10 @@ public class VideoApplicationTests {
 	@Test
 	public void testStream()throws Exception{
 		//String stream = VideoUtil.getStreamAddress("18504769");
-		VideoUtil.allowStream("21749"+"_18504769",1);
+		//
+		//VideoUtil.getStreamAddress("1850476");
+		Map map = TecentCloudUtils.getPushUrl("77777");
+		VideoUtil.allowStream("21749_77777",1,Long.valueOf(map.get("txTime").toString()));
+		System.out.println(map.toString());
 	}
 }

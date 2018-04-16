@@ -36,6 +36,7 @@ public class VideoController {
     protected static final String ERROR_MESSAGE = "服务器异常";//错误消息
     protected static final String SUCCESS_MESSAGE = "成功";//成功消息
 
+
     @PostMapping(value = "/register")
     @ApiOperation(value = "注册用户进入系统",httpMethod = "POST")
     public Object addUser(@ApiParam(name="code",value = "code",required = true)

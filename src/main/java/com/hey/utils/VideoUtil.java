@@ -4,6 +4,7 @@ import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 
 /**
@@ -20,7 +21,9 @@ public class VideoUtil {
     public static String getStreamAddress(String code){
         String address = "rtmp://"+BIZ_ID+".livepush.myqcloud.com/live/"+BIZ_ID+"_";
         Long time = getTxTime();
+        code = BIZ_ID+"_"+code;
         address += code+"?bizid="+BIZ_ID+"&"+Test.getSafeUrl(SAFE_KEY,code,time);
+
         return address;
     }
 
@@ -45,17 +48,20 @@ public class VideoUtil {
     }
 
     public static Long getTxTime(){
-        Long time = System.currentTimeMillis();
+        Long time = new Date().getTime();
         time = time+86400;
+        String timeString = String.valueOf(time);
+        timeString = timeString.substring(0,timeString.length()-3);
+        time = Long.valueOf(timeString);
         return time;
     }
 
     //推流
-    public static void allowStream(String stream,int status){
+    public static void allowStream(String stream,int status,Long time){
 
         String url = "http://fcgi.video.qcloud.com/common_access";
         String api = "Live_Channel_SetStatus";
-        Long time = getTxTime()+86400;
+
         String sign = getSign(time);
         String param = "appid="+APP_ID+"&interface="+api+"&Param.s.channel_id="+stream+"&Param.n.status="+status+"&t="+time+"&sign="+sign;
         //下面调用开始

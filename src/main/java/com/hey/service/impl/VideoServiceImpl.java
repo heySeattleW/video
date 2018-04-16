@@ -3,6 +3,7 @@ package com.hey.service.impl;
 import com.hey.dao.VideoDao;
 import com.hey.service.VideoService;
 import com.hey.utils.RandomNumberGenerator;
+import com.hey.utils.TecentCloudUtils;
 import com.hey.utils.VideoUtil;
 import com.hey.utils.WxUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class VideoServiceImpl implements VideoService {
         }else {
             String code = RandomNumberGenerator.generateNumber2();
             map.put("id", code);
-            map.put("stream_address", VideoUtil.getStreamAddress(code));
+            map.put("stream_address", TecentCloudUtils.getPushUrl(code));
             map.put("flv_address", VideoUtil.getPlayAddressFLV(code));
             map.put("hls_address", VideoUtil.getPlayAddressHLS(code));
             map.put("rtmp_address", VideoUtil.getPlayAddressRTMP(code));
