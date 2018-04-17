@@ -40,8 +40,8 @@ public class VideoApplicationTests {
 		//String stream = VideoUtil.getStreamAddress("18504769");
 		//
 		//VideoUtil.getStreamAddress("1850476");
-		Map map = TecentCloudUtils.getPushUrl("77777");
-		VideoUtil.allowStream("21749_77777",1,Long.valueOf(map.get("txTime").toString()));
+		Map map = TecentCloudUtils.getPushUrl("888888");
+		VideoUtil.allowStream("21749_888888",1,Long.valueOf(map.get("txTime").toString()));
 		System.out.println(map.toString());
 	}
 }

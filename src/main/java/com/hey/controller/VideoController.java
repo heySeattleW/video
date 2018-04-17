@@ -41,14 +41,14 @@ public class VideoController {
     @ApiOperation(value = "注册用户进入系统",httpMethod = "POST")
     public Object addUser(@ApiParam(name="code",value = "code",required = true)
                           @RequestParam(value = "code",required = true)String code,
-                          @ApiParam(name="sex",value = "性别，1是男，2是女，0是未知",required = true)
+                          @ApiParam(name="sex",value = "性别，1是男，2是女，0是未知",required = false)
                           @RequestParam(value = "sex",required = true)Integer sex,
-                          @ApiParam(name="city",value = "城市",required = true)
+                          @ApiParam(name="city",value = "城市",required = false)
                           @RequestParam(value = "city",required = true)String city,
-                          @ApiParam(name="nickName",value = "昵称",required = true)
+                          @ApiParam(name="nickName",value = "昵称",required = false)
                           @RequestParam(value = "nickName",required = true)String nickName,
                           @ApiParam(name="head",value = "头像",required = true)
-                          @RequestParam(value = "head",required = true)String head
+                          @RequestParam(value = "head",required = false)String head
     ){
         Map map = new HashMap();
         Map parMap = new HashMap();
@@ -76,6 +76,22 @@ public class VideoController {
         Map map = new HashMap();
         try {
             map.put("result",videoService.getUserInfo(uid));
+            map.put("code",SUCCESS_CODE);
+            map.put("msg",SUCCESS_MESSAGE);
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("code",ERROR_CODE);
+            map.put("msg",ERROR_MESSAGE);
+        }
+        return map;
+    }
+
+    @GetMapping(value = "/words")
+    @ApiOperation(value = "获取词条",httpMethod = "GET")
+    public Object getWords(){
+        Map map = new HashMap();
+        try {
+            map.put("result",videoService.getWords());
             map.put("code",SUCCESS_CODE);
             map.put("msg",SUCCESS_MESSAGE);
         }catch (Exception e){
@@ -185,7 +201,7 @@ public class VideoController {
                 file.mkdir();
             }
             String fileName = streamId;
-            String targetPath = savePath+fileName;
+            String targetPath = savePath+fileName+System.currentTimeMillis()/1000;
             //将视频下载到自己服务器
             VideoUtil.downLoadFromUrl(videoUrl,fileName+".mp4",savePath);
 
