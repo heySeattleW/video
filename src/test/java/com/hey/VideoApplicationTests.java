@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.awt.image.VolatileImage;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -43,5 +45,14 @@ public class VideoApplicationTests {
 		Map map = TecentCloudUtils.getPushUrl("888888");
 		VideoUtil.allowStream("21749_888888",1,Long.valueOf(map.get("txTime").toString()));
 		System.out.println(map.toString());
+	}
+
+	@Test
+	public void testRandomList()throws Exception{
+		List<Map> list = video.getWords();
+		list.forEach(n->{
+			System.out.println(n.get("words").toString());
+		});
+
 	}
 }

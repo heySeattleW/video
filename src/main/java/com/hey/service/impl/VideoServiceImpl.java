@@ -9,9 +9,7 @@ import com.hey.utils.WxUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hey on 2018/3/23.
@@ -45,7 +43,7 @@ public class VideoServiceImpl implements VideoService {
         }else {
             String code = RandomNumberGenerator.generateNumber2();
             map.put("id", code);
-            map.put("stream_address", TecentCloudUtils.getPushUrl(code));
+            map.put("stream_address", TecentCloudUtils.getPushUrl(code).get("realPushUrl").toString());
             map.put("flv_address", VideoUtil.getPlayAddressFLV(code));
             map.put("hls_address", VideoUtil.getPlayAddressHLS(code));
             map.put("rtmp_address", VideoUtil.getPlayAddressRTMP(code));
@@ -79,7 +77,12 @@ public class VideoServiceImpl implements VideoService {
      */
     @Override
     public List<Map> getWords()throws Exception{
-        return videoDao.getWords();
+        List<Map> list =  videoDao.getWords();
+        //从list中随机取出六条
+        List tempList;
+        Collections.shuffle(list);
+        tempList = list.subList(0,6);
+        return tempList;
     }
 
     /**

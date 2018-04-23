@@ -52,7 +52,7 @@
 
     <!--获取词条-->
     <select id="getWords" resultType="java.util.Map">
-        select * from word limit 6
+        select * from word
     </select>
 
     <!--更新音频和视频-->

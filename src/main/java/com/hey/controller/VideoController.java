@@ -42,12 +42,12 @@ public class VideoController {
     public Object addUser(@ApiParam(name="code",value = "code",required = true)
                           @RequestParam(value = "code",required = true)String code,
                           @ApiParam(name="sex",value = "性别，1是男，2是女，0是未知",required = false)
-                          @RequestParam(value = "sex",required = true)Integer sex,
+                          @RequestParam(value = "sex",required = false)Integer sex,
                           @ApiParam(name="city",value = "城市",required = false)
-                          @RequestParam(value = "city",required = true)String city,
+                          @RequestParam(value = "city",required = false)String city,
                           @ApiParam(name="nickName",value = "昵称",required = false)
-                          @RequestParam(value = "nickName",required = true)String nickName,
-                          @ApiParam(name="head",value = "头像",required = true)
+                          @RequestParam(value = "nickName",required = false)String nickName,
+                          @ApiParam(name="head",value = "头像",required = false)
                           @RequestParam(value = "head",required = false)String head
     ){
         Map map = new HashMap();
@@ -201,9 +201,9 @@ public class VideoController {
                 file.mkdir();
             }
             String fileName = streamId;
-            String targetPath = savePath+fileName+System.currentTimeMillis()/1000;
+            String targetPath = savePath+fileName+"_"+System.currentTimeMillis()/1000;
             //将视频下载到自己服务器
-            VideoUtil.downLoadFromUrl(videoUrl,fileName+".mp4",savePath);
+            VideoUtil.downLoadFromUrl(videoUrl,fileName+"_"+System.currentTimeMillis()/1000+".mp4",savePath);
 
             //从视频中提取音频
             String videoPath = targetPath+".mp4";
@@ -226,7 +226,7 @@ public class VideoController {
             }
             map.put("words",words);
             map.put("audioTime",time);
-            map.put("uid",streamId.split("_")[0]);
+            map.put("uid",streamId.split("_")[1]);
             //将视频和音频的地址存进数据库
             map.put("audio",audioPath);
             map.put("video",videoPath);
