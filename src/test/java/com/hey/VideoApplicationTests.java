@@ -55,4 +55,12 @@ public class VideoApplicationTests {
 		});
 
 	}
+
+	@Test
+	public void testi()throws Exception{
+		int i=1;
+//		--i;
+		System.out.println(i--);
+
+	}
 }
