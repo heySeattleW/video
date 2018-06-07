@@ -261,4 +261,54 @@ public class VideoController {
                 "}";
     }
 
+    //语音识别
+    @PostMapping(value = "/audio/discriminate")
+    @ApiOperation(value = "语音识别接口",httpMethod = "POST")
+    public Object addUser(@ApiParam(name="audio",value = "audio",required = true)
+                          @RequestBody(required = true)MultipartFile image,
+                          @ApiParam(name="flag",value = "flag 0是百度识别，1是讯飞识别",required = true)
+                          @RequestParam(required = true,value = "flag")Integer flag,
+                          HttpServletRequest request
+
+    ) {
+        Map map = new HashMap();
+        String voice_dir = "/root/public/audio/";
+        String voice_path = request.getServletContext().getRealPath("/root/public/audio");
+        try {
+            //将语音文件存本地
+            String audioPath = UploadSomething.uploadMusic(voice_path, image, voice_dir);
+            //拿到语音文件开始识别
+            String words = "";
+            if(flag==0){
+                //百度语音识别
+                //首先拿到音频的时间看需不需要切割
+                String targetPath = "_"+System.currentTimeMillis()/1000;
+                int time = AudioConverter.getAudioTime(audioPath);
+                if (time>60){
+                    //音频时长大于60，切割,获取识别后的文字
+                    words = AudioConverter.splitAudio(audioPath,targetPath);
+                }else {
+                    //时长小于60s，直接识别
+                    //先将mp3转成wav
+                    boolean flag1 = AudioConverter.AudioConverter(audioPath,targetPath+".wav", "wav");
+                    if(flag1){
+                        words = VoiceDistinguish.getVoiceString(targetPath+".wav");
+                    }
+                }
+            }else if(flag==1){
+                //讯飞语音识别
+                words = TestLfasr.init(audioPath);
+            }
+            map.put("result",words);
+            map.put("code", SUCCESS_CODE);
+            map.put("msg", SUCCESS_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", ERROR_CODE);
+            map.put("msg", ERROR_MESSAGE);
+        }
+
+        return map;
+    }
+
 }

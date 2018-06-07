@@ -14,8 +14,8 @@ import com.iflytek.msp.cpdb.lfasr.model.ProgressStatus;
 public class TestLfasr 
 {
 	// 原始音频存放地址
-//	private static final String local_file = "C:\\Users\\hey\\Desktop\\MP3\\ss.mp3";
-	private static final String local_file = "C:\\Users\\hey\\Desktop\\MP3\\10002989.wav";
+	//private static final String local_file = "C:\\Users\\hey\\Desktop\\10002989.mp3";
+//	private static final String local_file = "C:\\Users\\hey\\Desktop\\MP3\\10002989.wav";
 	/*
 	 * 转写类型选择：标准版和电话版分别为：
 	 * LfasrType.LFASR_STANDARD_RECORDED_AUDIO 和 LfasrType.LFASR_TELEPHONY_RECORDED_AUDIO
@@ -24,7 +24,7 @@ public class TestLfasr
 	// 等待时长（秒）
 	private static int sleepSecond = 20;
 	
-	public static void main(String[] args) {
+	public static String init(String local_file) {
 		// 加载配置文件
 		PropertyConfigurator.configure("log4j.properties");
 		
@@ -42,7 +42,7 @@ public class TestLfasr
 		// 获取上传任务ID
 		String task_id = "";
 		HashMap<String, String> params = new HashMap<>();
-//		params.put("has_participle", "true");
+		params.put("has_participle", "true");
 		try {
 			// 上传音频文件
 			Message uploadMsg = lc.lfasrUpload(local_file, type);
@@ -128,5 +128,6 @@ public class TestLfasr
 			System.out.println("ecode=" + resultMsg.getErr_no());
 			System.out.println("failed=" + resultMsg.getFailed());
 		}
+		return "";
 	}
 }
