@@ -1,21 +1,19 @@
 package com.hey.utils;
 
-import com.baidu.aip.speech.AipSpeech;
-import com.baidu.aip.speech.TtsResponse;
 import it.sauronsoftware.jave.AudioAttributes;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncodingAttributes;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Header;
-import org.json.JSONObject;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * Created by hey on 2018/1/16.
  */
 public class AudioConverter {
+
 
     //格式转换
     public static boolean AudioConverter(String source,String target,String format)throws Exception{
@@ -25,6 +23,7 @@ public class AudioConverter {
         audio.setChannels(1);
         //audio.setBitRate(16000);
         //audio.setCodec("wavpack");
+
 
         attrs.setFormat(format);
         attrs.setAudioAttributes(audio);

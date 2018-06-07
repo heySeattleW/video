@@ -1,25 +1,19 @@
 package com.hey.controller;
 
-import com.baidu.aip.speech.AipSpeech;
-import com.baidu.aip.speech.TtsResponse;
 import com.hey.service.VideoService;
 import com.hey.utils.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import javazoom.jl.decoder.Bitstream;
-import javazoom.jl.decoder.Header;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
-import java.net.URI;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.sun.xml.internal.ws.spi.db.BindingContextFactory.LOGGER;
 
 /**
  * Created by hey on 2018/3/23.
