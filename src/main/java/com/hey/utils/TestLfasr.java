@@ -1,10 +1,16 @@
 package com.hey.utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-
-import org.apache.log4j.PropertyConfigurator;
+import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.TypeReference;
+import org.apache.log4j.PropertyConfigurator;
+
+
 import com.iflytek.msp.cpdb.lfasr.client.LfasrClientImp;
 import com.iflytek.msp.cpdb.lfasr.exception.LfasrException;
 import com.iflytek.msp.cpdb.lfasr.model.LfasrType;
@@ -25,6 +31,8 @@ public class TestLfasr
 	private static int sleepSecond = 20;
 	
 	public static String init(String local_file) {
+
+        String endResult = "";
 		// 加载配置文件
 		PropertyConfigurator.configure("log4j.properties");
 		
@@ -112,7 +120,15 @@ public class TestLfasr
 		// 获取任务结果
 		try {
 			Message resultMsg = lc.lfasrGetResult(task_id);
-			System.out.println(resultMsg.getData());	
+
+			String successResult = resultMsg.getData();
+//            List<Map> maps = new ArrayList<>();
+			List<Map> maps = JSONArray.parseObject(successResult, new TypeReference<List<Map>>(){});
+
+			for(int i=0;i<maps.size();i++){
+			    endResult += maps.get(i).get("onebest").toString();
+            }
+			System.out.println(endResult);
 			// 如果返回状态等于0，则任务处理成功
 			if (resultMsg.getOk() == 0) {
 				// 打印转写结果
@@ -128,6 +144,6 @@ public class TestLfasr
 			System.out.println("ecode=" + resultMsg.getErr_no());
 			System.out.println("failed=" + resultMsg.getFailed());
 		}
-		return "";
+		return endResult;
 	}
 }

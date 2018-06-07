@@ -2,6 +2,7 @@ package com.hey;
 
 import com.hey.service.impl.VideoServiceImpl;
 import com.hey.utils.TecentCloudUtils;
+import com.hey.utils.TestLfasr;
 import com.hey.utils.VideoUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,5 +63,10 @@ public class VideoApplicationTests {
 //		--i;
 		System.out.println(i--);
 
+	}
+
+	@Test
+	public void test1(){
+		TestLfasr.init("C:\\Users\\hey\\Desktop\\MP3\\10002989.mp3");
 	}
 }

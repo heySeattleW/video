@@ -265,24 +265,27 @@ public class VideoController {
     @PostMapping(value = "/audio/discriminate")
     @ApiOperation(value = "语音识别接口",httpMethod = "POST")
     public Object addUser(@ApiParam(name="audio",value = "audio",required = true)
-                          @RequestBody(required = true)MultipartFile image,
+                          @RequestBody(required = true)MultipartFile audio,
                           @ApiParam(name="flag",value = "flag 0是百度识别，1是讯飞识别",required = true)
                           @RequestParam(required = true,value = "flag")Integer flag,
                           HttpServletRequest request
 
     ) {
         Map map = new HashMap();
-        String voice_dir = "/root/public/audio/";
-        String voice_path = request.getServletContext().getRealPath("/root/public/audio");
+//        String voice_dir = "/root/public/audio/";
+//        String voice_path = request.getServletContext().getRealPath("/root/public/audio");
+        String voice_dir = "C:\\Users\\hey\\Desktop\\MP3\\";
+        String voice_path = request.getServletContext().getRealPath("/public/audio/");
         try {
             //将语音文件存本地
-            String audioPath = UploadSomething.uploadMusic(voice_path, image, voice_dir);
+            String audioP = UploadSomething.uploadMusic(voice_path, audio, voice_dir);
+            String audioPath = voice_path+audioP.split("#")[2]+".mp3";
             //拿到语音文件开始识别
             String words = "";
             if(flag==0){
                 //百度语音识别
                 //首先拿到音频的时间看需不需要切割
-                String targetPath = "_"+System.currentTimeMillis()/1000;
+                String targetPath = voice_dir+"_"+System.currentTimeMillis()/1000;
                 int time = AudioConverter.getAudioTime(audioPath);
                 if (time>60){
                     //音频时长大于60，切割,获取识别后的文字
