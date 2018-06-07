@@ -43,11 +43,11 @@ public class VoiceDistinguish {
     }
 
     //语音合成
-    public static void synthesis(AipSpeech client, String txt)throws Exception{
+    public static void synthesis(AipSpeech client, String txt,String path,String name)throws Exception{
 
         // 设置可选参数
-        String path = "C:\\Users\\hey\\Desktop\\MP3";
-        String name = "2.mp3";
+//        path = "C:\\Users\\hey\\Desktop\\MP3";
+//        name = "2.mp3";
         HashMap<String, Object> options = new HashMap();
 //        options.put("spd", "5");
 //        options.put("pit", "5");
@@ -61,7 +61,7 @@ public class VoiceDistinguish {
      public static void main(String[] args){
         try {
             String txt = "我不知道年少轻狂，我只懂得胜者为王";
-            synthesis(new AipSpeech(APP_ID,API_KEY,SECRET_KEY),txt);
+//            synthesis(new AipSpeech(APP_ID,API_KEY,SECRET_KEY),txt);
         }catch (Exception e){
             e.printStackTrace();
         }

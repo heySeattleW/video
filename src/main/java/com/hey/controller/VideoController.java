@@ -69,6 +69,29 @@ public class VideoController {
         return map;
     }
 
+    @PostMapping(value = "/words/add")
+    @ApiOperation(value = "添加句子",httpMethod = "POST")
+    public Object addUser(@ApiParam(name="words",value = "words",required = true)
+                          @RequestParam(value = "words",required = true)String words
+    ) {
+        Map map = new HashMap();
+        if (words == null || words.equals("")) {
+            map.put("code", ERROR_CODE);
+            map.put("msg", "words不能为空");
+        } else {
+            try {
+                map.put("result", videoService.addWords(words));
+                map.put("code", SUCCESS_CODE);
+                map.put("msg", SUCCESS_MESSAGE);
+            } catch (Exception e) {
+                e.printStackTrace();
+                map.put("code", ERROR_CODE);
+                map.put("msg", ERROR_MESSAGE);
+            }
+        }
+        return map;
+    }
+
     @GetMapping(value = "/info")
     @ApiOperation(value = "获取用户信息",httpMethod = "GET")
     public Object getUserInfo(@ApiParam(name="uid",value = "用户id",required = true)

@@ -56,6 +56,13 @@ public interface VideoDao {
     List<Map> getWords()throws Exception;
 
     /**
+     * 添加词条
+     * @return
+     * @throws Exception
+     */
+    void addWords(Map map)throws Exception;
+
+    /**
      * 新增视频和音频
      * @param map
      * @throws Exception

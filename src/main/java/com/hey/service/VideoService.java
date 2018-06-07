@@ -54,4 +54,12 @@ public interface VideoService {
      * @throws Exception
      */
     List<Map> getVideoAndAudio(Long uid)throws Exception;
+
+    /**
+     * 添加句子
+     * @param words
+     * @return 返回句子和识别出语音的mp3
+     * @throws Exception
+     */
+    Map addWords(String words)throws Exception;
 }

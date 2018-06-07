@@ -1,15 +1,19 @@
 package com.hey.service.impl;
 
+import com.baidu.aip.speech.AipSpeech;
 import com.hey.dao.VideoDao;
 import com.hey.service.VideoService;
-import com.hey.utils.RandomNumberGenerator;
-import com.hey.utils.TecentCloudUtils;
-import com.hey.utils.VideoUtil;
-import com.hey.utils.WxUtil;
+import com.hey.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.hey.utils.VoiceDistinguish.API_KEY;
+import static com.hey.utils.VoiceDistinguish.APP_ID;
+import static com.hey.utils.VoiceDistinguish.SECRET_KEY;
 
 /**
  * Created by hey on 2018/3/23.
@@ -19,6 +23,10 @@ public class VideoServiceImpl implements VideoService {
 
     @Autowired
     private VideoDao videoDao;
+
+    private static final String url = "https://www.airobin.com.cn/audio/";
+    private static final String path = "/root/public/audio/";
+//    private static final String path = "C:\\Users\\er\\Desktop\\";
 
     @Override
     public Map addUser(Map map) throws Exception {
@@ -98,5 +106,29 @@ public class VideoServiceImpl implements VideoService {
         Map map = new HashMap();
         map.put("uid",uid);
         return videoDao.getVideoAndAudio(map);
+    }
+
+    /**
+     * 添加句子
+     * @param words
+     * @return 返回句子和识别出语音的mp3
+     * @throws Exception
+     */
+    public Map addWords(String words)throws Exception{
+        AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+        String name = sdf.format(new Date())+".mp3";
+        //语音合成
+        VoiceDistinguish.synthesis(client,words,path,name);
+        //合成之后将数据存在数据库
+        String fileName = path+name;
+        int audio_time = AudioConverter.getAudioTime(fileName);
+        String audio = url+name;
+        Map map = new HashMap();
+        map.put("words",words);
+        map.put("audio",audio);
+        map.put("audio_time",audio_time);
+        videoDao.addWords(map);
+        return map;
     }
 }

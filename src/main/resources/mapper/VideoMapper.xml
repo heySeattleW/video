@@ -55,6 +55,11 @@
         select * from word
     </select>
 
+    <!--添加词条-->
+    <insert id="addWords">
+        insert into word(words,audio,audio_time) values (#{words},#{audio},#{audio_time})
+    </insert>
+
     <!--更新音频和视频-->
     <insert id="addVideoAndAudio">
         insert into video(uid,video,audio,update_time,audio_words,audio_time) values
