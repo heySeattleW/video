@@ -31,7 +31,7 @@ public class TestLfasr
 
         String endResult = "";
 		// 加载配置文件
-		PropertyConfigurator.configure("log4j.properties");
+//		PropertyConfigurator.configure("log4j.properties");
 		
 		// 初始化LFASR实例
 		LfasrClientImp lc = null;

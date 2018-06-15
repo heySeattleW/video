@@ -6,27 +6,42 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by hey on 2018/1/16.
  */
 public class VoiceDistinguish {
 
-    //设置APPID/AK/SK
-    public static final String APP_ID = "10646219";
-    public static final String API_KEY = "7GgtkTnC60QZXrB0GpXFs8o4";
-    public static final String SECRET_KEY = "Px7C08okGvGfcYauWOfcdL8X7uOQSApw";
+    //设置APPID/AK/SK（自己的）
+//    public static final String APP_ID = "10646219";
+//    public static final String API_KEY = "7GgtkTnC60QZXrB0GpXFs8o4";
+//    public static final String SECRET_KEY = "Px7C08okGvGfcYauWOfcdL8X7uOQSApw";
+
+    //客户的
+    public static final String APP_ID = "11393593";
+    public static final String API_KEY = "M5q40liMRUY2a8KXNpRxPKoO";
+    public static final String SECRET_KEY = "arM8TXY7eldOUylTj0ET7e95QR1UvxzV";
 //    public static final String REAL_PATH = "C:\\apache-tomcat-8.0.48\\webapps\\redpack";
     public static final String REAL_PATH = "/usr/local/tomcat/webapps/redpack";
 
-    public static String getVoiceString(String path){
+    public static final int PURE_PUTONGHUA = 1536;
+    public static final int PUTONGHUA = 1537;
+    public static final int ENGLISH = 1737;
+    public static final int YUEYU = 1637;
+    public static final int SICHUANHUA = 1837;
+    public static final int PUTONGHUA_YUANCHANG = 1936;
+
+    public static String getVoiceString(String path,int devPid){
         // 初始化一个AipSpeech
         AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
         // 可选：设置网络连接参数
         client.setConnectionTimeoutInMillis(2000);
         client.setSocketTimeoutInMillis(60000);
         // 调用接口
-        JSONObject res = client.asr(path, "wav", 16000, null);
+        HashMap options = new HashMap<>();
+        options.put("dev_pid",devPid);
+        JSONObject res = client.asr(path, "wav", 16000, options);
         String resString;
         try {
              resString = res.get("result").toString();
@@ -40,6 +55,13 @@ public class VoiceDistinguish {
 //        System.out.print("C:\\apache-tomcat-8.0.48\\webapps\\redpack"+path+"路径来了");
 //        System.out.print(res.toString()+"内容来了");
         return resString;
+    }
+
+    public static int getDevPid(int flag){
+        int devpid = 1537;
+        switch (flag){
+            case 1:
+        }
     }
 
     //语音合成

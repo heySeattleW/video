@@ -19,7 +19,7 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .host("www.airobin.com.cn")
+//                .host("www.airobin.com.cn/video")
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hey.controller"))

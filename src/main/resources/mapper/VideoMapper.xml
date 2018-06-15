@@ -73,6 +73,20 @@
             where uid=#{uid}
         </if>
     </select>
+    
+    <!--<update id="xxx">-->
+        <!--update cable_point-->
+        <!--<set>-->
+            <!--<if test="gisId!=null">-->
+                <!--gis_id=#{gisId},-->
+            <!--</if>-->
+            <!--<if test="nickName!=null and nickName!=''">-->
+                <!--nick_name=#{nickName},-->
+            <!--</if>-->
+            <!--update_time=now()-->
+        <!--</set>-->
+        <!--where user_id=#{userId}-->
+    <!--</update>-->
 
 </mapper>
 

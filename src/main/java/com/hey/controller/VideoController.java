@@ -267,7 +267,7 @@ public class VideoController {
     ) {
         Map map = new HashMap();
 //        String voice_dir = "/root/public/audio/";
-//        String voice_path = request.getServletContext().getRealPath("/root/public/audio");
+//        String voice_path = request.getServletContext().getRealPath("/public/audio/");
         String voice_dir = "C:\\Users\\hey\\Desktop\\MP3\\";
         String voice_path = request.getServletContext().getRealPath("/public/audio/");
         try {
