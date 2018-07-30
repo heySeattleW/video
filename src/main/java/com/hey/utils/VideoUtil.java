@@ -170,4 +170,20 @@ public class VideoUtil {
         String path = "C:\\Users\\hey\\Desktop\\MP3";
         downLoadFromUrl(url,file,path);
     }
+
+    public static String getAudio(String videoUrl,String savePath,String suffix)throws Exception{
+        File file = new File(savePath);
+        if(!file.exists()){
+            file.mkdir();
+        }
+        String fileName = String.valueOf(System.currentTimeMillis()/1000);
+        String targetPath = savePath+fileName;
+        //将视频下载到自己服务器
+        VideoUtil.downLoadFromUrl(videoUrl,fileName+".mp4",savePath);
+        //从视频中提取音频
+        String videoPath = targetPath+".mp4";
+        String audioPath = targetPath+"."+suffix;
+        AudioConverter.getAudioFromVideo(videoPath,audioPath,suffix);
+        return fileName+"."+suffix;
+    }
 }

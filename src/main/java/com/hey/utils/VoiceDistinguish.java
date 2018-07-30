@@ -40,6 +40,9 @@ public class VoiceDistinguish {
         client.setSocketTimeoutInMillis(60000);
         // 调用接口
         HashMap options = new HashMap<>();
+        if(!getDevPid(devPid)){
+            devPid=PUTONGHUA;
+        }
         options.put("dev_pid",devPid);
         JSONObject res = client.asr(path, "wav", 16000, options);
         String resString;
@@ -54,18 +57,19 @@ public class VoiceDistinguish {
 //        System.out.print("result来了"+result);
 //        System.out.print("C:\\apache-tomcat-8.0.48\\webapps\\redpack"+path+"路径来了");
 //        System.out.print(res.toString()+"内容来了");
+        resString = resString.replace("\\","");
         return resString;
     }
 
-    public static int getDevPid(int flag){
-        int devpid = 1537;
-        switch (flag){
-            case 1:
+    public static boolean getDevPid(int flag){
+        if(flag!=PURE_PUTONGHUA&&flag!=PUTONGHUA&&flag!=ENGLISH&&flag!=YUEYU&&flag!=SICHUANHUA&&flag!=PUTONGHUA_YUANCHANG){
+            return false;
         }
+        return true;
     }
 
     //语音合成
-    public static void synthesis(AipSpeech client, String txt,String path,String name)throws Exception{
+    public static void synthesis(AipSpeech client, String txt,String path,String name,String per)throws Exception{
 
         // 设置可选参数
 //        path = "C:\\Users\\hey\\Desktop\\MP3";
@@ -73,7 +77,7 @@ public class VoiceDistinguish {
         HashMap<String, Object> options = new HashMap();
 //        options.put("spd", "5");
 //        options.put("pit", "5");
-        options.put("per", "1");
+        options.put("per",per);
         TtsResponse res = client.synthesis(txt, "zh", 1, options);
         System.out.println(res.getResult());
         JSONObject result = res.getResult();    //服务器返回的内容，合成成功时为null,失败时包含error_no等信息

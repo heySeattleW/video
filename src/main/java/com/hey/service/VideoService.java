@@ -61,5 +61,5 @@ public interface VideoService {
      * @return 返回句子和识别出语音的mp3
      * @throws Exception
      */
-    Map addWords(String words)throws Exception;
+    Map addWords(String words,String per)throws Exception;
 }

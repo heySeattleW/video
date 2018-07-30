@@ -84,11 +84,6 @@ public class UploadSomething {
         String name="";
         if(!dirs.exists()){
             dirs.mkdirs();
-        }
-        if (video.getSize() > 102400 * 102400) {
-            name="文件太大了";
-        } else if (!video.getContentType().equals("video/mp4")) {
-            name="文件格式不对";
         }else {
             String imgName = video.getOriginalFilename();
             String imgMD5 = Md5Util.MD5(imgName + UUIDUtil.uuid());
@@ -100,7 +95,8 @@ public class UploadSomething {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            name = dir + imgMD5 + suffix;
+//            name = dir + imgMD5 + suffix;
+            name = imgMD5 + suffix;
         }
         return name;//返回视频存放的相对路径
     }

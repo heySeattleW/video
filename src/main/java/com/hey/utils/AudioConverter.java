@@ -1,10 +1,13 @@
 package com.hey.utils;
 
+
 import it.sauronsoftware.jave.AudioAttributes;
 import it.sauronsoftware.jave.Encoder;
 import it.sauronsoftware.jave.EncodingAttributes;
+import it.sauronsoftware.jave.VideoAttributes;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.Header;
+
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +18,7 @@ import java.io.FileInputStream;
 public class AudioConverter {
 
 
-    //格式转换
+    //格式转换(音频)
     public static boolean AudioConverter(String source,String target,String format)throws Exception{
         AudioAttributes audio = new AudioAttributes();
         EncodingAttributes attrs = new EncodingAttributes();
@@ -27,6 +30,33 @@ public class AudioConverter {
 
         attrs.setFormat(format);
         attrs.setAudioAttributes(audio);
+        Encoder encoder = new Encoder();
+        boolean flag = false;
+        try {
+            File sourceFile = new File(source);
+            File targetFile = new File(target);
+            encoder.encode(sourceFile,targetFile,attrs);
+//            encoder.encode(sourceFile,targetFile,attrs);
+            flag = targetFile.exists();
+            if(flag){
+                sourceFile.delete();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flag;
+    }
+
+    //格式转换(视频)
+    public static boolean videoConverter(String source,String target,String format)throws Exception{
+        VideoAttributes video = new VideoAttributes();
+        EncodingAttributes attrs = new EncodingAttributes();
+
+        //audio.setBitRate(16000);
+        //audio.setCodec("wavpack");
+
+        attrs.setFormat(format);
+        attrs.setVideoAttributes(video);
         Encoder encoder = new Encoder();
         boolean flag = false;
         try {
@@ -50,6 +80,12 @@ public class AudioConverter {
 //            source.delete();
             //getAudioFromVideo();
             //splitAudio();
+            String videoPath = "C:\\Users\\er\\Documents\\WeChat Files\\jaychou114118\\Files\\1.webm";
+            String audioPath = "C:\\Users\\er\\Documents\\WeChat Files\\jaychou114118\\Files\\6.mp3";
+            String suffix = "mp3";
+            String format = "mp4";
+            getAudioFromVideo(videoPath,audioPath,suffix);
+//            System.out.println(videoConverter(videoPath,audioPath,format));
 
         }catch (Exception e){
             e.printStackTrace();
@@ -57,21 +93,28 @@ public class AudioConverter {
     }
 
     //从视频中分离出音频
-    public static void getAudioFromVideo(String videoPath,String audioPath){
+    public static boolean getAudioFromVideo(String videoPath,String audioPath,String suffix){
 
         AudioAttributes audio = new AudioAttributes();
         Encoder encoder = new Encoder();
         audio.setSamplingRate(16000);
         audio.setChannels(1);
         EncodingAttributes attrs = new EncodingAttributes();
-        attrs.setFormat("mp3");
+        attrs.setFormat(suffix);
         attrs.setAudioAttributes(audio);
         File source = new File(videoPath);
         File target = new File(audioPath);
         try {
+//            encoder.encode(source,target,attrs);
             encoder.encode(source,target,attrs);
+            //分离过后删除原视频
+            if(source.exists()){
+                source.delete();
+            }
+            return true;
         }catch (Exception e){
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -113,10 +156,11 @@ public class AudioConverter {
                 attrs.setDuration(duration);
                 attrs.setOffset(offset);
                 offset = duration+offset;
+//                encoder.encode(source,target,attrs);
                 encoder.encode(source,target,attrs);
                 //识别
                 long tt  = System.currentTimeMillis();
-                result += VoiceDistinguish.getVoiceString(path);
+                result += VoiceDistinguish.getVoiceString(path,VoiceDistinguish.PUTONGHUA);
                 long te  = System.currentTimeMillis();
                 System.out.println(te-tt);
                 System.out.println(result);

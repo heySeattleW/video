@@ -30,6 +30,10 @@ public class VideoController {
     protected static final String ERROR_MESSAGE = "服务器异常";//错误消息
     protected static final String SUCCESS_MESSAGE = "成功";//成功消息
 
+    public static final String SERVER_URL = "https://robin.deeprove.cn:8443/video/video/";
+    public static final String VIDEO_PATH = "/WEB-INF/classes/public/video/";
+    public static final String AUDIO_PATH = "/public/audio";
+
 
     @PostMapping(value = "/register")
     @ApiOperation(value = "注册用户进入系统",httpMethod = "POST")
@@ -63,10 +67,13 @@ public class VideoController {
         return map;
     }
 
-    @PostMapping(value = "/words/add")
-    @ApiOperation(value = "添加句子",httpMethod = "POST")
+    @GetMapping(value = "/words/add")
+    @ApiOperation(value = "添加句子",httpMethod = "GET")
     public Object addUser(@ApiParam(name="words",value = "words",required = true)
-                          @RequestParam(value = "words",required = true)String words
+                          @RequestParam(value = "words",required = true)String words,
+                          @ApiParam(name="per",value = "发音人选择, 0为女声，1为男声，\n" +
+                                  "3为情感合成-度逍遥，4为情感合成-度丫丫",required = false)
+                          @RequestParam(value = "per",required = false)String per
     ) {
         Map map = new HashMap();
         if (words == null || words.equals("")) {
@@ -74,7 +81,10 @@ public class VideoController {
             map.put("msg", "words不能为空");
         } else {
             try {
-                map.put("result", videoService.addWords(words));
+                if(per==null||per.equals("")){
+                    per = "1";
+                }
+                map.put("result", videoService.addWords(words,per));
                 map.put("code", SUCCESS_CODE);
                 map.put("msg", SUCCESS_MESSAGE);
             } catch (Exception e) {
@@ -82,6 +92,34 @@ public class VideoController {
                 map.put("code", ERROR_CODE);
                 map.put("msg", ERROR_MESSAGE);
             }
+        }
+        return map;
+    }
+
+    @PostMapping(value = "/audio/get/from/video")
+    @ApiOperation(value = "从视频中分离出音频",httpMethod = "POST")
+    public Object getAudioFromVideo(@ApiParam(name="video",value = "video",required = true)
+                          @RequestParam(value = "video",required = true)String video,
+                                    @ApiParam(name="suffix",value = "音频后缀（小写）",required = true)
+                                    @RequestParam(value = "suffix",required = true)String suffix,
+                                    HttpServletRequest request
+    ) {
+        Map map = new HashMap();
+        try {
+
+//            String sourcePath = request.getServletContext().getRealPath(VIDEO_PATH)+video;
+            String targetPath = request.getServletContext().getRealPath(VIDEO_PATH);
+            String returnPath = VideoUtil.getAudio(video,targetPath,suffix);
+//            String returnPath = video.split("\\.")[0]+"."+suffix;
+//            Boolean flag = AudioConverter.getAudioFromVideo(sourcePath,targetPath+returnPath,suffix);
+
+            map.put("result", SERVER_URL+returnPath);
+            map.put("code", SUCCESS_CODE);
+            map.put("msg", SUCCESS_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", ERROR_CODE);
+            map.put("msg", ERROR_MESSAGE);
         }
         return map;
     }
@@ -225,7 +263,7 @@ public class VideoController {
             //从视频中提取音频
             String videoPath = targetPath+".mp4";
             String audioPath = targetPath+".mp3";
-            AudioConverter.getAudioFromVideo(videoPath,audioPath);
+            AudioConverter.getAudioFromVideo(videoPath,audioPath,"mp3");
             //将音频进行语音识别
             //首先拿到音频的时间看需不需要切割
             int time = AudioConverter.getAudioTime(audioPath);
@@ -238,7 +276,7 @@ public class VideoController {
                 //先将mp3转成wav
                 boolean flag = AudioConverter.AudioConverter(audioPath,targetPath+".wav", "wav");
                 if(flag){
-                    words = VoiceDistinguish.getVoiceString(targetPath+".wav");
+                    words = VoiceDistinguish.getVoiceString(targetPath+".wav",VoiceDistinguish.PUTONGHUA);
                 }
             }
             map.put("words",words);
@@ -259,21 +297,27 @@ public class VideoController {
     @PostMapping(value = "/audio/discriminate")
     @ApiOperation(value = "语音识别接口",httpMethod = "POST")
     public Object addUser(@ApiParam(name="audio",value = "audio",required = true)
-                          @RequestBody(required = true)MultipartFile audio,
+                          @RequestParam(value = "audio",required = true)String audio,
                           @ApiParam(name="flag",value = "flag 0是百度识别，1是讯飞识别",required = true)
                           @RequestParam(required = true,value = "flag")Integer flag,
                           HttpServletRequest request
 
     ) {
         Map map = new HashMap();
+        String fileName = String.valueOf(System.currentTimeMillis()/1000)+".mp3";
+        String savePath = request.getServletContext().getRealPath(VIDEO_PATH);
+
+
 //        String voice_dir = "/root/public/audio/";
 //        String voice_path = request.getServletContext().getRealPath("/public/audio/");
-        String voice_dir = "C:\\Users\\hey\\Desktop\\MP3\\";
+        String voice_dir = "C:\\tomcat\\tomcat\\webapps\\video\\public\\audio";
         String voice_path = request.getServletContext().getRealPath("/public/audio/");
         try {
             //将语音文件存本地
-            String audioP = UploadSomething.uploadMusic(voice_path, audio, voice_dir);
-            String audioPath = voice_path+audioP.split("#")[2]+".mp3";
+            VideoUtil.downLoadFromUrl(audio,fileName,savePath);
+            String audioPath = savePath+fileName;
+//            String audioP = UploadSomething.uploadMusic(voice_path, audio, voice_dir);
+//            String audioPath = voice_path+audioP.split("#")[2]+".mp3";
             //拿到语音文件开始识别
             String words = "";
             if(flag==0){
@@ -284,17 +328,20 @@ public class VideoController {
                 if (time>60){
                     //音频时长大于60，切割,获取识别后的文字
                     words = AudioConverter.splitAudio(audioPath,targetPath);
+//                    words = words.replace("\\","");
                 }else {
                     //时长小于60s，直接识别
                     //先将mp3转成wav
                     boolean flag1 = AudioConverter.AudioConverter(audioPath,targetPath+".wav", "wav");
                     if(flag1){
-                        words = VoiceDistinguish.getVoiceString(targetPath+".wav");
+                        words = VoiceDistinguish.getVoiceString(targetPath+".wav",VoiceDistinguish.PUTONGHUA);
+//                        words = words.replace("\\","");
                     }
                 }
             }else if(flag==1){
                 //讯飞语音识别
                 words = TestLfasr.init(audioPath);
+                words = words.replace("\\","");
             }
             map.put("result",words);
             map.put("code", SUCCESS_CODE);
@@ -305,6 +352,30 @@ public class VideoController {
             map.put("msg", ERROR_MESSAGE);
         }
 
+        return map;
+    }
+
+    @PostMapping(value = "/upload")
+    @ApiOperation(value = "上传",httpMethod = "POST")
+    public Object userUpload(@ApiParam(name="video",value = "视频",required = true)
+                                  @RequestBody(required = true)MultipartFile video,
+                                  HttpServletRequest request){
+
+        Map map = new HashMap();
+        String voice_dir = "";
+        String voice_path = request.getServletContext().getRealPath(VIDEO_PATH);
+        try {
+            //上传视频
+            map.put("result",UploadSomething.uploadVideo(voice_path, video, voice_dir));
+            map.put("code", SUCCESS_CODE);
+            map.put("msg", SUCCESS_MESSAGE);
+
+            //支付完成后走发送红包逻辑
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("code",ERROR_CODE);
+            map.put("msg",ERROR_MESSAGE);
+        }
         return map;
     }
 

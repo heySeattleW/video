@@ -69,4 +69,9 @@ public class VideoApplicationTests {
 	public void test1(){
 		TestLfasr.init("C:\\Users\\hey\\Desktop\\MP3\\10002989.mp3");
 	}
+
+	@Test
+	public void testT()throws Exception{
+		video.testT();
+	}
 }

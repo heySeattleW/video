@@ -6,6 +6,7 @@ import com.hey.service.VideoService;
 import com.hey.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -24,9 +25,9 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private VideoDao videoDao;
 
-    private static final String url = "https://www.airobin.com.cn/audio/";
-    private static final String path = "/root/public/audio/";
-//    private static final String path = "C:\\Users\\er\\Desktop\\";
+    private static final String url = "https://robin.deeprove.cn:8443/video/audio/";
+//    private static final String path = "/root/public/audio/";
+    private static final String path = "C:\\tomcat\\tomcat\\webapps\\video\\WEB-INF\\classes\\public\\audio\\";
 
     @Override
     public Map addUser(Map map) throws Exception {
@@ -114,12 +115,12 @@ public class VideoServiceImpl implements VideoService {
      * @return 返回句子和识别出语音的mp3
      * @throws Exception
      */
-    public Map addWords(String words)throws Exception{
+    public Map addWords(String words,String per)throws Exception{
         AipSpeech client = new AipSpeech(APP_ID, API_KEY, SECRET_KEY);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
         String name = sdf.format(new Date())+".mp3";
         //语音合成
-        VoiceDistinguish.synthesis(client,words,path,name);
+        VoiceDistinguish.synthesis(client,words,path,name,per);
         //合成之后将数据存在数据库
         String fileName = path+name;
         int audio_time = AudioConverter.getAudioTime(fileName);
@@ -130,5 +131,15 @@ public class VideoServiceImpl implements VideoService {
         map.put("audio_time",audio_time);
         videoDao.addWords(map);
         return map;
+    }
+
+    @Transactional
+    public void testT()throws Exception{
+        Map map = new HashMap();
+        map.put("words","xxx");
+        map.put("audio","xxx");
+        map.put("audio_time",3);
+        videoDao.addWords(map);
+        throw new RuntimeException("测试事务");
     }
 }
